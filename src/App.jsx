@@ -7,7 +7,7 @@ import NotFound from "./pages/NotFound.jsx";
 import NewDrink from "./pages/NewDrink.jsx";
 import Login from "./pages/Login.jsx";
 import "./App.css";
-import { useAuth } from "./auth/useAuth";
+import { useAuth } from "./auth/AuthContext.jsx";
 
 function App() {
   const { isAdmin, logout } = useAuth();
