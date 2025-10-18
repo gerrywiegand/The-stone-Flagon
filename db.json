@@ -7,6 +7,14 @@
       "description": "A refreshing pint of ale.",
       "inStock": true,
       "imageUrl": "https://example.com/images/ale.png"
+    },
+    {
+      "id": "1888",
+      "name": "wow",
+      "price": 65,
+      "description": "aa",
+      "image_url": "",
+      "inStock": true
     }
   ]
 }
