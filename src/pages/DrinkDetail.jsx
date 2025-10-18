@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DrinkForm from "../components/DrinkForm";
 import { fetchDrink, updateDrink, deleteDrink } from "../services/drinks";
+import { useAuth } from "../auth/AuthContext";
 
 function DrinkDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [drink, setDrink] = useState(null);
   const [error, setError] = useState("");
+  const { isAdmin } = useAuth();
 
   // READ
   useEffect(() => {
@@ -53,8 +55,12 @@ function DrinkDetail() {
     <div>
       <h2>Drink Detail Page</h2>
       {error && <p style={{ color: "salmon" }}>{error}</p>}
-      <DrinkForm initialData={drink} onSubmit={handleUpdate} />
-      <button onClick={handleDelete}>Delete Drink</button>
+      <DrinkForm
+        initialData={drink}
+        onSubmit={handleUpdate}
+        readOnly={!isAdmin}
+      />
+      {isAdmin && <button onClick={handleDelete}>Delete Drink</button>}
     </div>
   );
 }

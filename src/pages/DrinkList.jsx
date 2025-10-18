@@ -5,6 +5,11 @@ import { Outlet, useNavigate } from "react-router-dom";
 function DrinkList() {
   const navigate = useNavigate();
   const [drinks, setDrinks] = useState([]);
+  const [drinkFilter, setDrinkFilter] = useState("");
+
+  const filteredDrinks = drinks.filter((drink) =>
+    drink.name.toLowerCase().includes(drinkFilter.toLowerCase())
+  );
 
   useEffect(() => {
     fetch(`${API}/drinks`)
@@ -24,10 +29,17 @@ function DrinkList() {
   return (
     <div>
       <h2>Drinks Index Page</h2>
+      <input
+        type="text"
+        aria-label="Search drinks"
+        placeholder="Search drinks…"
+        value={drinkFilter}
+        onChange={(e) => setDrinkFilter(e.target.value)}
+      />
       <ul>
-        {drinks.map((drink) => (
+        {filteredDrinks.map((drink) => (
           <li key={drink.id}>
-            {drink.name} - ${drink.price.toFixed(2)}
+            {drink.name} - ${Number(drink.price).toFixed(2)}
             <button onClick={() => navigate(`/drinks/${drink.id}`)}>
               View Details
             </button>

@@ -1,9 +1,9 @@
 {
   "drinks": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Ale",
-      "price": 5,
+      "price": 5.03,
       "description": "A refreshing pint of ale.",
       "inStock": true,
       "imageUrl": "https://example.com/images/ale.png"

@@ -1,26 +1,31 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 
-function DrinkForm({ initialData, onSubmit }) {
-  const [formData, setFormData] = useState(
-    initialData || {
-      name: "",
-      price: "",
-      description: "",
-      imageUrl: "",
-      inStock: false,
-    }
-  );
+const EMPTY = {
+  name: "",
+  price: "",
+  description: "",
+  imageUrl: "",
+  inStock: false,
+};
+
+export default function DrinkForm({ initialData, onSubmit, readOnly = false }) {
+  const [formData, setFormData] = useState(initialData || EMPTY);
+
+  useEffect(() => {
+    setFormData(initialData || EMPTY);
+  }, [initialData]);
 
   function handleChange(e) {
     const { name, type, value, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
   }
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (readOnly) return;
     onSubmit(formData);
   }
 
@@ -29,11 +34,12 @@ function DrinkForm({ initialData, onSubmit }) {
       <label>
         Drink Name:
         <input
-          type="text"
           name="name"
+          type="text"
           value={formData.name}
           onChange={handleChange}
           required
+          disabled={readOnly}
         />
       </label>
       <br />
@@ -41,12 +47,13 @@ function DrinkForm({ initialData, onSubmit }) {
       <label>
         Price:
         <input
-          type="number"
           name="price"
+          type="number"
           step="0.01"
           value={formData.price}
           onChange={handleChange}
           required
+          disabled={readOnly}
         />
       </label>
       <br />
@@ -54,36 +61,40 @@ function DrinkForm({ initialData, onSubmit }) {
       <label>
         Description:
         <input
-          type="text"
           name="description"
+          type="text"
           value={formData.description}
           onChange={handleChange}
+          disabled={readOnly}
         />
       </label>
       <br />
+
       <label>
         Image URL:
         <input
-          type="text"
           name="imageUrl"
+          type="text"
           value={formData.imageUrl}
           onChange={handleChange}
+          disabled={readOnly}
         />
       </label>
       <br />
+
       <label>
         In Stock:
         <input
-          type="checkbox"
           name="inStock"
+          type="checkbox"
           checked={formData.inStock}
           onChange={handleChange}
+          disabled={readOnly}
         />
       </label>
       <br />
-      <button type="submit">Submit</button>
+
+      {!readOnly && <button type="submit">Save</button>}
     </form>
   );
 }
-
-export default DrinkForm;

@@ -1,9 +1,7 @@
-import react from "react";
-
 function DrinksIndex() {
   return (
     <div>
-      <h2>Drinks Index Page</h2>
+      <h2>Welcome to the Stone Flagon!</h2>
     </div>
   );
 }
