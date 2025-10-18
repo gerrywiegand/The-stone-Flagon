@@ -1,101 +1,28 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import DrinkForm from "../components/DrinkForm";
 import { API } from "../config";
+import { useNavigate } from "react-router-dom";
 
 function NewDrink() {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
-  const [image_url, setImageUrl] = useState("");
-  const [inStock, setInStock] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
+  const handleAddDrink = (newDrink) => {
     fetch(`${API}/drinks`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: name,
-        price: parseFloat(price) || 0,
-        description: description,
-        image_url: image_url,
-        inStock: inStock,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...newDrink, price: parseFloat(newDrink.price) }),
     })
       .then((r) => {
-        if (!r.ok) {
-          throw new Error("Network response was not ok");
-        }
+        if (!r.ok) throw new Error("Failed to add drink");
         return r.json();
       })
-      .then((data) => {
-        console.log("Drink added:", data);
-        navigate("/drinks");
-      })
-      .catch((error) => console.error("Error adding drink:", error));
+      .then(() => navigate("/drinks"))
+      .catch((err) => console.error(err));
   };
 
   return (
     <div>
-      <h2>Drinks Index Page</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Drink Name:
-          <input
-            type="text"
-            name="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Price:
-          <input
-            type="number"
-            name="price"
-            step="0.01"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Description:
-          <input
-            type="text"
-            name="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Image URL:
-          <input
-            type="text"
-            name="image_url"
-            value={image_url}
-            onChange={(e) => setImageUrl(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          inStock:
-          <input
-            type="checkbox"
-            name="inStock"
-            checked={inStock}
-            onChange={(e) => setInStock(e.target.checked)}
-          />
-        </label>
-        <br />
-        <button type="submit">Add Drink</button>
-      </form>
+      <h2>Add a New Drink</h2>
+      <DrinkForm onSubmit={handleAddDrink} />
     </div>
   );
 }
