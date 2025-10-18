@@ -1,11 +1,25 @@
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../auth/useAuth"; // using the simple custom hook
 
 function NavBar() {
+  const { isAdmin, login, logout } = useAuth();
+
   return (
     <nav>
-      <NavLink to="/">Home |</NavLink>
-      <NavLink to="/drinks">Drinks |</NavLink>
-      <NavLink to="/drinks/new">Add New Drink</NavLink>
+      <NavLink to="/">Home</NavLink>
+      <span> | </span>
+      <NavLink to="/drinks">Drinks</NavLink>
+      <span> | </span>
+
+      {isAdmin ? (
+        <>
+          <NavLink to="/drinks/new">Add New Drink</NavLink>
+          <span> | </span>
+          <button onClick={logout}>Logout</button>
+        </>
+      ) : (
+        <button onClick={login}>Login</button>
+      )}
     </nav>
   );
 }
