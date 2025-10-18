@@ -1,6 +1,6 @@
 import react from "react";
 
-function DrinksIndex() {
+function NewDrink() {
   return (
     <div>
       <h2>Drinks Index Page</h2>
@@ -8,4 +8,4 @@ function DrinksIndex() {
   );
 }
 
-export default DrinksIndex;
+export default NewDrink;

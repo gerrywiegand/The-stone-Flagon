@@ -1,6 +1,6 @@
 import react from "react";
 
-function DrinksIndex() {
+function NotFound() {
   return (
     <div>
       <h2>Error</h2>
@@ -8,4 +8,4 @@ function DrinksIndex() {
   );
 }
 
-export default NotFOund;
+export default NotFound;
