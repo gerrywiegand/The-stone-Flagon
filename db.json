@@ -34,6 +34,13 @@
       "price": 15,
       "description": "A magical mead that is said to enhance one's intellect and spellcasting abilities.",
       "inStock": true
+    },
+    {
+      "id": "7009",
+      "price": 35,
+      "description": "Don't go chasing dragons now....",
+      "inStock": true,
+      "name": "Fairy Brandy"
     }
   ]
 }

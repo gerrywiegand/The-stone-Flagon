@@ -1,28 +1,46 @@
-import { NavLink } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
-// Navigation bar component
-function NavBar() {
-  const { isAdmin, login, logout } = useAuth();
+import { Link } from "react-router-dom";
+import { useAuth } from "../auth/AuthContext.jsx";
+
+export default function NavBar() {
+  const { isAdmin, logout } = useAuth();
 
   return (
-    <nav>
-      <NavLink to="/">Home</NavLink>
-      <span> | </span>
-      <NavLink to="/drinks">Drinks</NavLink>
-      <span> | </span>
+    <header className="navbar">
+      <div className="navbar-inner">
+        <nav className="nav-left">
+          <Link to="/" className="nav-link">
+            Home
+          </Link>
+          <span className="nav-sep">|</span>
+          <Link to="/drinks" className="nav-link">
+            Drinks
+          </Link>
+          {isAdmin && (
+            <>
+              <span className="nav-sep">|</span>
+              <Link to="/drinks/new" className="nav-link">
+                Add New Drink
+              </Link>
+            </>
+          )}
+        </nav>
 
-      {isAdmin ? (
-        <>
-          <NavLink to="/drinks/new">Add New Drink</NavLink>
-          <span> | </span>
-          <button onClick={logout}>Logout</button>
-          <p>Logged in as Admin</p>
-        </>
-      ) : (
-        <button onClick={login}>Login</button>
-      )}
-    </nav>
+        <div className="nav-center" aria-hidden>
+          {/* keep empty to visually center title via layout */}
+        </div>
+
+        <div className="nav-right">
+          {isAdmin ? (
+            <button className="btn" onClick={logout}>
+              Logout
+            </button>
+          ) : (
+            <Link to="/login" className="btn">
+              Login
+            </Link>
+          )}
+        </div>
+      </div>
+    </header>
   );
 }
-
-export default NavBar;

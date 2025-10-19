@@ -11,26 +11,33 @@ function DrinkDetail() {
   const [drink, setDrink] = useState(null);
   const [error, setError] = useState("");
   const { isAdmin } = useAuth(); // only admins can edit/delete
+  const [loading, setLoading] = useState(false);
 
   // READ
   useEffect(() => {
+    setLoading(true);
     fetchDrink(id)
       .then((data) => setDrink(data))
       .catch((err) => {
         console.error("Error fetching drink:", err);
         setError("Could not load drink.");
         navigate("/drinks");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [id, navigate]);
 
   // UPDATE
   function handleUpdate(updated) {
     updated.price = parseFloat(updated.price) || 0;
+    setLoading(true);
 
     updateDrink(id, updated)
       .then((data) => {
         console.log("Drink updated:", data);
         setDrink(data);
+        setLoading(false);
       })
       .catch((err) => {
         console.error("Error updating drink:", err);
@@ -42,11 +49,15 @@ function DrinkDetail() {
   function handleDelete() {
     if (!window.confirm("Delete this drink?")) return;
 
+    setLoading(true);
     deleteDrink(id)
       .then(() => navigate("/drinks"))
       .catch((err) => {
         console.error("Error deleting drink:", err);
         setError("Delete failed.");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
@@ -55,6 +66,7 @@ function DrinkDetail() {
   return (
     <div>
       <h2>Drink Detail Page</h2>
+      {loading && <p>Loading...</p>}
       {error && <p style={{ color: "salmon" }}>{error}</p>}
       <DrinkForm
         initialData={drink}

@@ -1,68 +1,139 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* === GLOBAL DWARVEN THEME === */
 body {
+  background-color: #1f1f1f;
+  color: #e5e5e5;
+  font-family: "Cinzel", "Merriweather", serif;
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
+/* Adjust all buttons globally */
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #3a5fcd;
+  color: #e5e5e5;
+  border: 1px solid #c9a33b;
+  border-radius: 6px;
+  padding: 8px 12px;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.2s ease;
 }
 button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  background-color: #c9a33b;
+  color: #1f1f1f;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* === LAYOUT === */
+.shop-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  padding: 24px;
+  min-height: calc(100vh - 80px);
+}
+
+/* === SIDEBAR === */
+.shop-sidebar {
+  background: #2c2f34;
+  border: 2px solid #3a5fcd;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.sidebar-label {
+  display: block;
+  font-weight: 700;
+  color: #c9a33b;
+  margin-bottom: 8px;
+}
+
+.sidebar-search {
+  width: 100%;
+  border: 1px solid #3a5fcd;
+  background: #1f1f1f;
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: #e5e5e5;
+}
+.sidebar-search::placeholder {
+  color: #888;
+}
+
+.sidebar-check {
+  display: block;
+  margin: 8px 0;
+  user-select: none;
+  color: #a0a0a0;
+}
+
+/* === MAIN CONTENT === */
+.shop-content {
+  background: #2c2f34;
+  border: 2px solid #3a5fcd;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.shop-title {
+  text-align: center;
+  color: #c9a33b;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(201, 163, 59, 0.6);
+}
+
+/* === CARD GRID === */
+.card-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: #1f1f1f;
+  border: 1px solid #3a5fcd;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: inset 0 0 10px rgba(201, 163, 59, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 10px rgba(201, 163, 59, 0.3);
+}
+
+.card-title {
+  color: #c9a33b;
+  font-weight: bold;
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+}
+
+.card-sub {
+  color: #3a5fcd;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.card-text {
+  color: #e5e5e5;
+  margin: 2px 0;
+}
+
+.card-button {
+  background-color: #3a5fcd;
+  color: #e5e5e5;
+  border: 1px solid #c9a33b;
+  border-radius: 6px;
+  margin-top: 12px;
+  padding: 6px 12px;
+}
+.card-button:hover {
+  background-color: #c9a33b;
+  color: #1f1f1f;
 }
