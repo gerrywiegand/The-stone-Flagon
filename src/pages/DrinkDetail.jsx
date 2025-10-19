@@ -5,11 +5,12 @@ import { fetchDrink, updateDrink, deleteDrink } from "../services/drinks";
 import { useAuth } from "../auth/AuthContext";
 
 function DrinkDetail() {
-  const { id } = useParams();
+  // READ, UPDATE, DELETE
+  const { id } = useParams(); // get :id from the URL
   const navigate = useNavigate();
   const [drink, setDrink] = useState(null);
   const [error, setError] = useState("");
-  const { isAdmin } = useAuth();
+  const { isAdmin } = useAuth(); // only admins can edit/delete
 
   // READ
   useEffect(() => {

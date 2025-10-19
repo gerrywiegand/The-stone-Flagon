@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-
+// Navigation bar component
 function NavBar() {
   const { isAdmin, login, logout } = useAuth();
 
@@ -16,6 +16,7 @@ function NavBar() {
           <NavLink to="/drinks/new">Add New Drink</NavLink>
           <span> | </span>
           <button onClick={logout}>Logout</button>
+          <p>Logged in as Admin</p>
         </>
       ) : (
         <button onClick={login}>Login</button>
