@@ -4,7 +4,6 @@ const EMPTY = {
   name: "",
   price: "",
   description: "",
-  imageUrl: "",
   inStock: false,
 };
 
@@ -64,18 +63,6 @@ export default function DrinkForm({ initialData, onSubmit, readOnly = false }) {
           name="description"
           type="text"
           value={formData.description}
-          onChange={handleChange}
-          disabled={readOnly}
-        />
-      </label>
-      <br />
-
-      <label>
-        Image URL:
-        <input
-          name="imageUrl"
-          type="text"
-          value={formData.imageUrl}
           onChange={handleChange}
           disabled={readOnly}
         />

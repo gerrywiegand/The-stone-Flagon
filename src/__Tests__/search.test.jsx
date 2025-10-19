@@ -58,10 +58,8 @@ describe("DrinkList - Search filter", () => {
 });
 
 it("filters the list when the user types", async () => {
-  // Arrange
   mockFetchOnce(DRINKS);
 
-  // Act
   renderWithProviders(<DrinkList />, { route: "/drinks" });
 
   // Wait for initial items
@@ -71,7 +69,7 @@ it("filters the list when the user types", async () => {
   expect(screen.getByText(/Mead/i)).toBeInTheDocument();
   expect(screen.getByText(/Stout/i)).toBeInTheDocument();
 
-  // Find the search input (by accessible name or placeholder)
+  // Find the search input
   let input;
   try {
     input = screen.getByRole("textbox", { name: /search drinks/i });
