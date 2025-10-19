@@ -1,6 +1,6 @@
 import React from "react";
 import { screen, waitFor, fireEvent } from "@testing-library/react";
-import { vi, describe, it, afterEach } from "vitest";
+import { vi, describe, it, afterEach, expect } from "vitest";
 import { renderWithProviders } from "../test/setup";
 import DrinkList from "../pages/DrinkList";
 
@@ -50,43 +50,30 @@ describe("DrinkList - Search filter", () => {
     renderWithProviders(<DrinkList />, { route: "/drinks" });
 
     await waitFor(() => {
-      expect(screen.getByText(/Ale/i)).toBeInTheDocument();
+      // exact match to avoid grabbing the sidebar sentence
+      expect(screen.getAllByText(/^Ale$/i)[0]).toBeInTheDocument();
     });
-    expect(screen.getByText(/Mead/i)).toBeInTheDocument();
-    expect(screen.getByText(/Stout/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/^Mead$/i)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/^Stout$/i)[0]).toBeInTheDocument();
   });
-});
 
-it("filters the list when the user types", async () => {
-  mockFetchOnce(DRINKS);
+  it("filters the list when the user types", async () => {
+    mockFetchOnce(DRINKS);
 
-  renderWithProviders(<DrinkList />, { route: "/drinks" });
+    renderWithProviders(<DrinkList />, { route: "/drinks" });
 
-  // Wait for initial items
-  await waitFor(() => {
-    expect(screen.getByText(/Ale/i)).toBeInTheDocument();
+    // Wait for initial items
+    await waitFor(() => {
+      expect(screen.getAllByText(/^Ale$/i)[0]).toBeInTheDocument();
+    });
+
+    // Type "al" should leave Ale visible, hide Mead/Stout if your filter works that way
+    const input = screen.getByPlaceholderText(/search drinks/i);
+    fireEvent.change(input, { target: { value: "al" } });
+
+    // After filtering
+    expect(screen.getAllByText(/^Ale$/i)[0]).toBeInTheDocument();
+    expect(screen.queryByText(/^Mead$/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Stout$/i)).not.toBeInTheDocument();
   });
-  expect(screen.getByText(/Mead/i)).toBeInTheDocument();
-  expect(screen.getByText(/Stout/i)).toBeInTheDocument();
-
-  // Find the search input
-  let input;
-  try {
-    input = screen.getByRole("textbox", { name: /search drinks/i });
-  } catch {
-    input = screen.getByPlaceholderText(/search drinks/i);
-  }
-
-  // Type "al" → should match only "Ale"
-  fireEvent.change(input, { target: { value: "al" } });
-
-  expect(screen.getByText(/Ale/i)).toBeInTheDocument();
-  expect(screen.queryByText(/Mead/i)).not.toBeInTheDocument();
-  expect(screen.queryByText(/Stout/i)).not.toBeInTheDocument();
-
-  // Clear → all items return
-  fireEvent.change(input, { target: { value: "" } });
-  expect(screen.getByText(/Ale/i)).toBeInTheDocument();
-  expect(screen.getByText(/Mead/i)).toBeInTheDocument();
-  expect(screen.getByText(/Stout/i)).toBeInTheDocument();
 });

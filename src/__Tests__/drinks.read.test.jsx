@@ -26,11 +26,10 @@ describe("DrinkList - Read", () => {
     // Act: render list page
     renderWithProviders(<DrinkList />, { route: "/drinks" });
 
-    // Assert: wait for items to appear
     await waitFor(() => {
-      expect(screen.getByText(/Ale/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/^Ale$/i)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(/^Stout$/i)[0]).toBeInTheDocument();
     });
-    expect(screen.getByText(/Stout/i)).toBeInTheDocument();
 
     // price formatting (from your .toFixed(2))
     expect(screen.getByText(/\$5\.00/)).toBeInTheDocument();

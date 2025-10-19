@@ -1,4 +1,3 @@
-// src/__Tests__/routing.test.jsx
 import React from "react";
 import { describe, it, expect, afterEach, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
@@ -75,12 +74,11 @@ describe("Routing", () => {
     // Click "Drinks" link in NavBar
     fireEvent.click(screen.getByRole("link", { name: /drinks/i }));
 
-    // Wait for list to load and verify items render
     await waitFor(() => {
-      expect(screen.getByText(/drinks index page/i)).toBeInTheDocument();
+      expect(screen.getByText(/The Stone Flagon’s Menu/i)).toBeInTheDocument();
     });
-    expect(screen.getByText(/ale/i)).toBeInTheDocument();
-    expect(screen.getByText(/stout/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/^Ale$/i)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/^Stout$/i)[0]).toBeInTheDocument();
   });
 
   it("navigates to Add New Drink when admin", async () => {
