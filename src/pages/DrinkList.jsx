@@ -7,8 +7,8 @@ function DrinkList() {
   const [drinks, setDrinks] = useState([]);
   const [drinkFilter, setDrinkFilter] = useState("");
 
-  const filteredDrinks = drinks.filter((drink) =>
-    drink.name.toLowerCase().includes(drinkFilter.toLowerCase())
+  const filteredDrinks = drinks.filter(
+    (drink) => drink.name.toLowerCase().includes(drinkFilter.toLowerCase()) // case-insensitive match
   );
 
   useEffect(() => {
@@ -37,14 +37,18 @@ function DrinkList() {
         onChange={(e) => setDrinkFilter(e.target.value)}
       />
       <ul>
-        {filteredDrinks.map((drink) => (
-          <li key={drink.id}>
-            {drink.name} - ${Number(drink.price).toFixed(2)}
-            <button onClick={() => navigate(`/drinks/${drink.id}`)}>
-              View Details
-            </button>
-          </li>
-        ))}
+        {filteredDrinks.map(
+          (
+            drink // display filtered drinks, set price to 2 decimals
+          ) => (
+            <li key={drink.id}>
+              {drink.name} - ${Number(drink.price).toFixed(2)}
+              <button onClick={() => navigate(`/drinks/${drink.id}`)}>
+                View Details
+              </button>
+            </li>
+          )
+        )}
       </ul>
       <Outlet />
     </div>

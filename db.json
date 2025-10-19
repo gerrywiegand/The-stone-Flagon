@@ -2,9 +2,37 @@
   "drinks": [
     {
       "id": "1",
-      "name": "Ale",
+      "name": "Dwarven Ale",
       "price": 5,
-      "description": "A refreshing pint of ale.",
+      "description": "A refreshing pint of ale. Perfect to cool down after a hot day in the forge",
+      "inStock": true
+    },
+    {
+      "id": "2",
+      "name": "Elven Wine",
+      "price": 12,
+      "description": "A bottle of exquisite wine from ancient vineyards. Best served chilled.",
+      "inStock": true
+    },
+    {
+      "id": "3",
+      "name": "Orcish Stout",
+      "price": 7,
+      "description": "A dark, hearty stout favored by the orc warriors. Not for the faint of heart.",
+      "inStock": false
+    },
+    {
+      "id": "4",
+      "name": "Goblin Grog",
+      "price": 3,
+      "description": "A cheap and nasty concoction brewed by goblins. Drink at your own risk!",
+      "inStock": true
+    },
+    {
+      "id": "5",
+      "name": "Wizard's Mead",
+      "price": 15,
+      "description": "A magical mead that is said to enhance one's intellect and spellcasting abilities.",
       "inStock": true
     }
   ]

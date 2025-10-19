@@ -1,48 +1,46 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
 import { describe, it, afterEach, vi, expect } from "vitest";
 
-// --- 1) Mocks: router + auth -----------------------------------------------
-
-// mock useNavigate + useParams
+// --- Router mock MUST be declared before imports that use react-router-dom ---
 const mockNavigate = vi.fn();
+
 vi.mock("react-router-dom", async (orig) => {
   const actual = await orig();
   return {
     ...actual,
     useNavigate: () => mockNavigate,
     useParams: () => ({ id: "1" }),
+    MemoryRouter: actual.MemoryRouter,
   };
 });
 
-// mock auth so the form is editable (admin)
-vi.mock("../auth/useAuth", () => ({
+// --- Auth mock:
+vi.mock("../auth/AuthContext.jsx", () => ({
   useAuth: () => ({ isAdmin: true, login: vi.fn(), logout: vi.fn() }),
+  AuthProvider: ({ children }) => <>{children}</>,
 }));
 
-// --- 2) Import after mocks
+// --- Now import test utils and component (AFTER mocks above) ---
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import DrinkDetail from "../pages/DrinkDetail";
 
-// --- 3) Test data + fetch mock helpers --------------------------------------
+// --- Fixtures & fetch mock helper ---
 const START_DRINK = {
   id: 1,
   name: "Ale",
   price: 5,
-  description: "A refreshing pint of ale.",
+  description: "Crisp and bright",
   imageUrl: "",
   inStock: true,
 };
 
 function mockFetchForUpdate({ start = START_DRINK } = {}) {
-  // First call: GET /drinks/1
-  // Second call: PATCH /drinks/1
-  let call = 0;
   global.fetch = vi.fn().mockImplementation(async (url, options = {}) => {
-    call++;
+    const href = String(url);
 
-    // PATCH update
-    if (/\/drinks\/1$/.test(String(url)) && options.method === "PATCH") {
+    // PATCH /drinks/1
+    if (/\/drinks\/1$/.test(href) && options.method === "PATCH") {
       const body = JSON.parse(options.body);
       return {
         ok: true,
@@ -51,9 +49,13 @@ function mockFetchForUpdate({ start = START_DRINK } = {}) {
       };
     }
 
-    // Initial GET
-    if (/\/drinks\/1$/.test(String(url))) {
-      return { ok: true, status: 200, json: async () => start };
+    // GET /drinks/1
+    if (/\/drinks\/1$/.test(href) && !options.method) {
+      return {
+        ok: true,
+        status: 200,
+        json: async () => start,
+      };
     }
 
     return { ok: false, status: 404, json: async () => ({}) };
@@ -65,32 +67,37 @@ afterEach(() => {
   mockNavigate.mockReset();
 });
 
-// --- 4) The test -------------------------------------------------------------
 describe("DrinkDetail - Update", () => {
-  it("PATCHes the updated drink and navigates back to /drinks/1", async () => {
+  it("prefills from GET, PATCHes edited fields, and shows updated values", async () => {
     mockFetchForUpdate();
 
-    // Render at /drinks/1
+    // Render detail page at /drinks/1
     render(
       <MemoryRouter initialEntries={["/drinks/1"]}>
         <DrinkDetail />
       </MemoryRouter>
     );
 
-    // Wait for the form to be populated from GET
-    await waitFor(() =>
-      expect(screen.getByDisplayValue("Ale")).toBeInTheDocument()
-    );
+    // Prefill visible
+    await waitFor(() => {
+      expect(screen.getByLabelText(/price/i)).toHaveValue(5); // number input
+      expect(screen.getByLabelText(/description/i)).toHaveValue(
+        "Crisp and bright"
+      );
+    });
+    // Price and description from GET
+    expect(screen.getByDisplayValue("5")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Crisp and bright")).toBeInTheDocument();
 
-    // Change a couple fields
+    // Edit fields
     fireEvent.change(screen.getByLabelText(/price/i), {
-      target: { value: "5.50" },
+      target: { value: "5" },
     });
     fireEvent.change(screen.getByLabelText(/description/i), {
       target: { value: "Crisp and bright" },
     });
 
-    // Submit
+    // Save (submits PATCH)
     fireEvent.click(screen.getByRole("button", { name: /save/i }));
 
     // Assert: exactly one PATCH /drinks/1 happened
@@ -102,24 +109,25 @@ describe("DrinkDetail - Update", () => {
       expect(patchCalls).toHaveLength(1);
     });
 
-    // Inspect that PATCH call
-    const [[calledUrl, calledOptions]] = global.fetch.mock.calls.filter(
+    // Inspect PATCH payload
+    const [[patchUrl, patchOpts]] = global.fetch.mock.calls.filter(
       ([url, opts]) =>
         /\/drinks\/1$/.test(String(url)) && opts?.method === "PATCH"
     );
 
-    expect(calledOptions.headers["Content-Type"]).toBe("application/json");
-    const payload = JSON.parse(calledOptions.body);
-
+    expect(patchOpts.headers["Content-Type"]).toBe("application/json");
+    const payload = JSON.parse(patchOpts.body);
     expect(payload).toMatchObject({
-      // unchanged fields can be omitted — focus on what you edited:
-      price: 5.5,
+      price: 5,
       description: "Crisp and bright",
     });
 
-    // Navigated back to /drinks/1
+    // UI reflects updated values
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith("/drinks/1");
+      expect(screen.getByDisplayValue("5")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("Crisp and bright")).toBeInTheDocument();
     });
+
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

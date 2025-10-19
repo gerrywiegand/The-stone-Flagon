@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-
+// AuthContext to provide authentication state and actions
 const AuthContext = createContext(null);
 
 function AuthProvider({ children }) {
   const [isAdmin, setIsAdmin] = useState(
-    () => JSON.parse(localStorage.getItem("isAdmin")) || false
+    () => JSON.parse(localStorage.getItem("isAdmin")) || false // default to false
   );
 
   useEffect(() => {

@@ -9,7 +9,7 @@ function NewDrink() {
     fetch(`${API}/drinks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...newDrink, price: parseFloat(newDrink.price) }),
+      body: JSON.stringify({ ...newDrink, price: parseFloat(newDrink.price) }), // ensure price is a number
     })
       .then((r) => {
         if (!r.ok) throw new Error("Failed to add drink");
