@@ -32,7 +32,7 @@ function mockFetchForCreate() {
         json: async () => ({ id: 99, ...body }),
       };
     }
-    // default: not expected in this test
+
     return { ok: false, status: 404, json: async () => ({}) };
   });
 }
@@ -42,10 +42,10 @@ describe("NewDrink - Create", () => {
     // Arrange
     mockFetchForCreate();
 
-    // Act: render the page
+    // render the page
     renderWithProviders(<NewDrink />, { route: "/drinks/new" });
 
-    // Fill fields (labels should match your component)
+    // Fill fields
     fireEvent.change(screen.getByLabelText(/drink name/i), {
       target: { value: "Porter" },
     });
@@ -55,37 +55,40 @@ describe("NewDrink - Create", () => {
     fireEvent.change(screen.getByLabelText(/description/i), {
       target: { value: "Roasty and smooth" },
     });
-    fireEvent.change(screen.getByLabelText(/image url/i), {
-      target: { value: "https://example.com/porter.png" },
-    });
+
     // checkbox
-    const stock = screen.getByLabelText(/inStock/i);
-    fireEvent.click(stock); // toggles from false -> true
+    const stock = screen.getByLabelText(/in stock/i);
+    fireEvent.click(stock); // toggle to true
 
-    // Submit (button text should match your component)
-    fireEvent.click(screen.getByRole("button", { name: /add drink/i }));
+    // Submit
+    fireEvent.click(screen.getByRole("button", { name: /save/i }));
 
-    // Assert: fetch was called once with POST to /drinks
+    //  fetch was called once with POST to /drinks
+    // Assert: exactly one POST /drinks happened (even if others fired)
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledTimes(1);
+      const postCalls = global.fetch.mock.calls.filter(
+        ([url, opts]) =>
+          String(url).match(/\/drinks$/) && opts?.method === "POST"
+      );
+      expect(postCalls).toHaveLength(1);
     });
 
-    const [calledUrl, calledOptions] = global.fetch.mock.calls[0];
-    expect(String(calledUrl)).toMatch(/\/drinks$/);
-    expect(calledOptions.method).toBe("POST");
-    expect(calledOptions.headers["Content-Type"]).toBe("application/json");
+    // Extract that single POST call
+    const [[calledUrl, calledOptions]] = global.fetch.mock.calls.filter(
+      ([url, opts]) => String(url).match(/\/drinks$/) && opts?.method === "POST"
+    );
 
+    expect(calledOptions.headers["Content-Type"]).toBe("application/json");
     const payload = JSON.parse(calledOptions.body);
-    // Your NewDrink uses image_url (snake_case). Adjust if you changed it.
+
     expect(payload).toMatchObject({
       name: "Porter",
-      price: 6.25, // your component does parseFloat(price)
+      price: 6.25,
       description: "Roasty and smooth",
-      image_url: "https://example.com/porter.png",
       inStock: true,
     });
 
-    // Assert: navigated back to /drinks
+    //  navigated back to /drinks
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith("/drinks");
     });

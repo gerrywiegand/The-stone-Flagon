@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
 
 const EMPTY = {
-  name: "",
+  // empty form state
   price: "",
   description: "",
   inStock: false,
 };
 
 export default function DrinkForm({ initialData, onSubmit, readOnly = false }) {
+  // readOnly for view-only mode
   const [formData, setFormData] = useState(initialData || EMPTY);
 
   useEffect(() => {
+    // reset form if initialData changes
     setFormData(initialData || EMPTY);
   }, [initialData]);
 
   function handleChange(e) {
+    // handle input changes
     const { name, type, value, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -38,7 +41,7 @@ export default function DrinkForm({ initialData, onSubmit, readOnly = false }) {
           value={formData.name}
           onChange={handleChange}
           required
-          disabled={readOnly}
+          disabled={readOnly} // disable in read-only mode
         />
       </label>
       <br />
@@ -52,7 +55,7 @@ export default function DrinkForm({ initialData, onSubmit, readOnly = false }) {
           value={formData.price}
           onChange={handleChange}
           required
-          disabled={readOnly}
+          disabled={readOnly} // disable in read-only mode
         />
       </label>
       <br />
@@ -64,7 +67,7 @@ export default function DrinkForm({ initialData, onSubmit, readOnly = false }) {
           type="text"
           value={formData.description}
           onChange={handleChange}
-          disabled={readOnly}
+          disabled={readOnly} // disable in read-only mode
         />
       </label>
       <br />
@@ -76,7 +79,7 @@ export default function DrinkForm({ initialData, onSubmit, readOnly = false }) {
           type="checkbox"
           checked={formData.inStock}
           onChange={handleChange}
-          disabled={readOnly}
+          disabled={readOnly} // disable in read-only mode
         />
       </label>
       <br />
