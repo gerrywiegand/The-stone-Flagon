@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 const EMPTY = {
   // empty form state
+  name: "",
   price: "",
   description: "",
   inStock: false,
@@ -9,7 +10,10 @@ const EMPTY = {
 
 export default function DrinkForm({ initialData, onSubmit, readOnly = false }) {
   // readOnly for view-only mode
-  const [formData, setFormData] = useState(initialData || EMPTY);
+  const [formData, setFormData] = useState({
+    ...EMPTY,
+    ...(initialData || {}),
+  });
 
   useEffect(() => {
     // reset form if initialData changes
